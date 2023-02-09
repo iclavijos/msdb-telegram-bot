@@ -2,6 +2,7 @@ package com.icesoft.msdb.telegram.bot.controllers
 
 import com.icesoft.msdb.telegram.bot.command.ShowCommand
 import com.icesoft.msdb.telegram.bot.command.SubscribeCommand
+import com.icesoft.msdb.telegram.bot.command.UnsubscribeCommand
 import com.icesoft.msdb.telegram.bot.config.BotProperties
 import lombok.extern.slf4j.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
@@ -23,13 +24,15 @@ import java.util.*
 class CommandsHandler(
     private val botProperties: BotProperties,
     private val startCommand: SubscribeCommand,
-    private val showCommand: ShowCommand) : TelegramLongPollingCommandBot() {
+    private val unsubscribeCommand: UnsubscribeCommand,
+    showCommand: ShowCommand) : TelegramLongPollingCommandBot() {
 
     @Autowired
     protected lateinit var messageSource: MessageSource
 
     init {
         register(startCommand)
+        register(unsubscribeCommand)
         register(showCommand)
 
         register(HelpCommand())
@@ -38,11 +41,11 @@ class CommandsHandler(
     override fun filter(message: Message?): Boolean {
         if (message?.chat?.isUserChat == true) return false
 
-        var chatMemberCommand = GetChatMember.builder()
+        val chatMemberCommand = GetChatMember.builder()
             .userId(message!!.from.id)
-            .chatId(message!!.chatId)
+            .chatId(message.chatId)
             .build()
-        var chatMember = execute(chatMemberCommand)
+        val chatMember = execute(chatMemberCommand)
         return chatMember !is ChatMemberAdministrator && chatMember !is ChatMemberOwner
     }
 
@@ -58,11 +61,13 @@ class CommandsHandler(
         val sendMessageRequest = SendMessage()
 
         if (update?.hasCallbackQuery() == true) {
-            val callbackData = update?.callbackQuery?.data
+            val callbackData = update.callbackQuery?.data
             if (callbackData!!.startsWith("start", false)) {
-                startCommand.handleCallbackQuery(this, update!!.callbackQuery)
+                startCommand.handleCallbackQuery(this, update.callbackQuery)
+            } else if (callbackData.startsWith("unsubscribe", false)) {
+                unsubscribeCommand.handleCallbackQuery(this, update.callbackQuery)
             }
-            return // sendAnswerCallbackQuery("lele", false, update?.callbackQuery)
+            return
         }
 
         sendMessageRequest.chatId = update?.message?.chatId.toString()

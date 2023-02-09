@@ -1,4 +1,4 @@
-package com.icesoft.msdb.telegram.bot.repository
+package com.icesoft.msdb.telegram.bot.repository.jpa
 
 import com.icesoft.msdb.telegram.bot.model.Series
 import org.springframework.data.jpa.repository.JpaRepository
