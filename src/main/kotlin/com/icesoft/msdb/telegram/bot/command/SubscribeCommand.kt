@@ -20,9 +20,10 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 @Component
-class SubscribeCommand(val subscriptionsService: SubscriptionsService,
-                       commandIdentifier: String = "subscribe",
-                       description: String = "Subscribe to a series to receive notifications before each session") :
+class SubscribeCommand(
+    val subscriptionsService: SubscriptionsService,
+    commandIdentifier: String = "subscribe",
+    description: String = "Subscribe to a series to receive notifications before each session") :
     BotCommand(commandIdentifier, description) {
 
     private val BACK = "⬅️"
@@ -52,9 +53,9 @@ class SubscribeCommand(val subscriptionsService: SubscriptionsService,
         sendMessageRequest.text =
             "[\u200B](${allSeries[0].logoUrl}) [${allSeries[0].name}](https://www.motorsports-database.racing/series/${allSeries[0].id}/view"
         sendMessageRequest.enableMarkdown(true)
-        sendMessageRequest.replyMarkup = this.getGalleryView(0, -1, user!!.languageCode)
+        sendMessageRequest.replyMarkup = this.getGalleryView(0, -1, user.languageCode)
 
-        absSender!!.execute(sendMessageRequest)
+        absSender.execute(sendMessageRequest)
     }
 
     fun handleCallbackQuery(absSender: AbsSender, callbackQuery: CallbackQuery) {
@@ -90,26 +91,26 @@ class SubscribeCommand(val subscriptionsService: SubscriptionsService,
         absSender.execute(sendMessageRequest)
     }
 
-    private fun sendAnswerCallbackQuery(text: String, alert: Boolean, absSender: AbsSender, callbackQuery: CallbackQuery) {
+    private fun sendAnswerCallbackQuery(text: String, absSender: AbsSender, callbackQuery: CallbackQuery) {
         val answerCallbackQuery = AnswerCallbackQuery()
         answerCallbackQuery.callbackQueryId = callbackQuery.id
-        answerCallbackQuery.showAlert = alert
+        answerCallbackQuery.showAlert = true
         answerCallbackQuery.text = text
         absSender.execute(answerCallbackQuery)
     }
 
-    private fun getGalleryView(index: Int, action: Int, languageCode: String): InlineKeyboardMarkup? {
+    private fun getGalleryView(position: Int, action: Int, languageCode: String): InlineKeyboardMarkup? {
         /*
          * action = 1 -> back
          * action = 2 -> next
          * action = -1 -> nothing
          */
-        var index = index
+        var index = position
         if (action == 1 && index > 0) {
             index--
         } else if (action == 1 && index == 0) {
             return null
-        } else if (action == 2 && index >= allSeries!!.size - 1) {
+        } else if (action == 2 && index >= allSeries.size - 1) {
             return null
         } else if (action == 2) {
             index++
@@ -157,12 +158,12 @@ class SubscribeCommand(val subscriptionsService: SubscriptionsService,
             }
         } else if (data[2] == "next") {
             markup = this.getGalleryView(data[3].toInt(), 2, callbackQuery.from.languageCode)
-            if (index < allSeries!!.size - 1) {
+            if (index < allSeries.size - 1) {
                 index++
             }
         }
         if (markup == null) {
-            sendAnswerCallbackQuery(INDEX_OUT_OF_RANGE, false, absSender, callbackQuery)
+            sendAnswerCallbackQuery(INDEX_OUT_OF_RANGE, absSender, callbackQuery)
         } else {
             val editMarkup = EditMessageText()
             editMarkup.chatId = callbackQuery.message.chatId.toString()
