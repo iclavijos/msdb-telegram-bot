@@ -39,6 +39,3 @@ spring:
       host: localhost
       port: 27017
       database: msdb
-  elasticsearch:
-    rest:
-      uris: http://localhost:9200
