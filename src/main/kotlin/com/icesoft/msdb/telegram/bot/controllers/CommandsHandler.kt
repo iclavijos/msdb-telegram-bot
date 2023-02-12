@@ -38,17 +38,6 @@ class CommandsHandler(
         register(HelpCommand())
     }
 
-    override fun filter(message: Message?): Boolean {
-        if (message?.chat?.isUserChat == true) return false
-
-        val chatMemberCommand = GetChatMember.builder()
-            .userId(message!!.from.id)
-            .chatId(message.chatId)
-            .build()
-        val chatMember = execute(chatMemberCommand)
-        return chatMember !is ChatMemberAdministrator && chatMember !is ChatMemberOwner
-    }
-
     override fun getBotToken(): String {
         return botProperties.token
     }
@@ -57,9 +46,23 @@ class CommandsHandler(
         return botProperties.username
     }
 
-    override fun processNonCommandUpdate(update: Update?) {
-        val sendMessageRequest = SendMessage()
+    override fun filter(message: Message?): Boolean {
+        if (message?.chat?.isUserChat == true) return false
 
+        if (message?.text?.startsWith("/subscribe", true)!! ||
+            message.text?.startsWith("/unsubscribe", true)!!) {
+            // This check should be better handled with inheritance. Will review that later on
+            val chatMemberCommand = GetChatMember.builder()
+                .userId(message.from.id)
+                .chatId(message.chatId)
+                .build()
+            val chatMember = execute(chatMemberCommand)
+            return chatMember !is ChatMemberAdministrator && chatMember !is ChatMemberOwner
+        }
+        return false
+    }
+
+    override fun processNonCommandUpdate(update: Update?) {
         if (update?.hasCallbackQuery() == true) {
             val callbackData = update.callbackQuery?.data
             if (callbackData!!.startsWith("start", false)) {
@@ -70,13 +73,19 @@ class CommandsHandler(
             return
         }
 
-        sendMessageRequest.chatId = update?.message?.chatId.toString()
+        if (update?.message?.isCommand!!) {
+            // We got here as the message was filtered due to lack of privileges of user
+            val sendMessageRequest = SendMessage()
 
-        sendMessageRequest.text = messageSource.getMessage(
-            "error.noPrivileges",
-            arrayOf(update?.message?.chat?.userName),
-            Locale.forLanguageTag(update?.message?.from?.languageCode))
-        execute(sendMessageRequest)
+            sendMessageRequest.chatId = update.message?.chatId.toString()
+
+            sendMessageRequest.text = messageSource.getMessage(
+                "error.noPrivileges",
+                arrayOf(update.message?.from?.userName ?: "${update.message?.from?.firstName} ${update.message?.from?.lastName}"),
+                Locale.forLanguageTag(update.message?.from?.languageCode ?: "ES")
+            )
+            execute(sendMessageRequest)
+        }
     }
 
     override fun processInvalidCommandUpdate(update: Update?) {
