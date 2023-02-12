@@ -12,4 +12,9 @@ data class Series(
     var organizer: String,
     var relevance: Int
 ) {
+    constructor() : this(
+        -1, "",
+        "", "",
+        "", -1
+    )
 }
