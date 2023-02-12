@@ -33,12 +33,10 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+	implementation("org.springframework.boot:spring-boot-starter-freemarker")
 
 	implementation("org.telegram:telegrambots-spring-boot-starter:6.4.0")
 	implementation("org.telegram:telegrambotsextensions:6.4.0")
-
-	implementation("org.freemarker:freemarker:2.3.32")
-
 
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
