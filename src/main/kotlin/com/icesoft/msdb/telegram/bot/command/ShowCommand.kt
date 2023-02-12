@@ -29,7 +29,7 @@ class ShowCommand(val subscriptionsService: SubscriptionsService,
         val model = mutableMapOf<String, List<TelegramGroupSubscription>>()
         model["subscriptions"] = subscriptions
 
-        val template = freeMarkerConfiguration.getTemplate("subscriptions.ftlh", Locale.forLanguageTag(user!!.languageCode))
+        val template = freeMarkerConfiguration.getTemplate("subscriptions.ftlh", Locale.forLanguageTag(user!!.languageCode ?: "ES"))
         val stringWriter = StringWriter()
         template.process(model, stringWriter)
 
@@ -41,11 +41,5 @@ class ShowCommand(val subscriptionsService: SubscriptionsService,
         sendMessageRequest.text = stringWriter.toString()
         absSender!!.execute(sendMessageRequest)
 
-//        sendMessageRequest.text =
-//            "[\u200B](${allSeries[0].logoUrl}) [${allSeries[0].name}](https://www.motorsports-database.racing/series/${allSeries[0].id}/view"
-//        sendMessageRequest.enableMarkdown(true)
-//        sendMessageRequest.replyMarkup = this.getGalleryView(0, -1, user!!.languageCode)
-//
-//        absSender!!.execute(sendMessageRequest)
     }
 }
