@@ -1,15 +1,13 @@
 package com.icesoft.msdb.telegram.bot.controllers
 
-import com.icesoft.msdb.telegram.bot.command.ShowCommand
-import com.icesoft.msdb.telegram.bot.command.SubscribeCommand
-import com.icesoft.msdb.telegram.bot.command.UnsubscribeCommand
+import com.icesoft.msdb.telegram.bot.command.*
 import com.icesoft.msdb.telegram.bot.config.BotProperties
 import lombok.extern.slf4j.Slf4j
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.MessageSource
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.extensions.bots.commandbot.TelegramLongPollingCommandBot
-import org.telegram.telegrambots.extensions.bots.commandbot.commands.helpCommand.HelpCommand
 import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChatMember
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.Message
@@ -23,19 +21,24 @@ import java.util.*
 @Component
 class CommandsHandler(
     private val botProperties: BotProperties,
-    private val startCommand: SubscribeCommand,
+    private val subscribeCommand: SubscribeCommand,
     private val unsubscribeCommand: UnsubscribeCommand,
-    showCommand: ShowCommand) : TelegramLongPollingCommandBot() {
+    showCommand: ShowCommand,
+    helpCommand: HelpCommand) : TelegramLongPollingCommandBot() {
+
+    private val logger = LoggerFactory.getLogger(javaClass)
 
     @Autowired
     protected lateinit var messageSource: MessageSource
 
+    private var commandPattern = "/(\\w+)@?\\w*".toRegex()
+
     init {
-        register(startCommand)
+        register(subscribeCommand)
         register(unsubscribeCommand)
         register(showCommand)
 
-        register(HelpCommand())
+        register(helpCommand)
     }
 
     override fun getBotToken(): String {
@@ -47,13 +50,22 @@ class CommandsHandler(
     }
 
     override fun filter(message: Message?): Boolean {
-        if (message?.chat?.isUserChat == true) return false
 
-        if (message?.text?.startsWith("/subscribe", true)!! ||
-            message.text?.startsWith("/unsubscribe", true)!!) {
-            // This check should be better handled with inheritance. Will review that later on
+        val commandTxt = message!!.text.split("\\s+".toRegex())[0]
+
+        var command = getRegisteredCommand(commandPattern.matchEntire(commandTxt)?.groupValues?.get(1)) as MSDBCommand?
+
+        if (command == null && commandTxt == "/start") {
+            command = subscribeCommand
+        } else if (command == null) {
+            logger.warn("Command not found: ${message.text}")
+        }
+
+        if (message.chat?.isUserChat!!) return false
+
+        if (command?.restricted == true) {
             val chatMemberCommand = GetChatMember.builder()
-                .userId(message.from.id)
+                .userId(message.from!!.id)
                 .chatId(message.chatId)
                 .build()
             val chatMember = execute(chatMemberCommand)
@@ -66,14 +78,14 @@ class CommandsHandler(
         if (update?.hasCallbackQuery() == true) {
             val callbackData = update.callbackQuery?.data
             if (callbackData!!.startsWith("start", false)) {
-                startCommand.handleCallbackQuery(this, update.callbackQuery)
+                subscribeCommand.handleCallbackQuery(this, update.callbackQuery)
             } else if (callbackData.startsWith("unsubscribe", false)) {
                 unsubscribeCommand.handleCallbackQuery(this, update.callbackQuery)
             }
             return
         }
 
-        if (update?.message?.isCommand!!) {
+        if (update?.message?.isCommand == true) {
             // We got here as the message was filtered due to lack of privileges of user
             val sendMessageRequest = SendMessage()
 
@@ -93,7 +105,7 @@ class CommandsHandler(
         commandUnknownMessage.chatId = update?.message?.chatId.toString()
         commandUnknownMessage.text = messageSource.getMessage(
             "error.wtf",
-            arrayOf(update?.message?.from?.userName),
+            arrayOf(update?.message?.from?.userName ?: "${update?.message?.from?.firstName} ${update?.message?.from?.lastName}"),
             Locale.forLanguageTag(update?.message?.from?.languageCode))
 
         execute(commandUnknownMessage)

@@ -2,10 +2,7 @@ package com.icesoft.msdb.telegram.bot.command
 
 import com.icesoft.msdb.telegram.bot.model.Series
 import com.icesoft.msdb.telegram.bot.service.SubscriptionsService
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.MessageSource
 import org.springframework.stereotype.Component
-import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup
@@ -20,11 +17,8 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 @Component
-class SubscribeCommand(
-    val subscriptionsService: SubscriptionsService,
-    commandIdentifier: String = "subscribe",
-    description: String = "Subscribe to a series to receive notifications before each session") :
-    BotCommand(commandIdentifier, description) {
+class SubscribeCommand(private val subscriptionsService: SubscriptionsService):
+    MSDBCommand("subscribe", "help.subscribe.basic", "help.subscribe.extended", true) {
 
     private val BACK = "⬅️"
     private val NEXT = "➡️"
@@ -39,21 +33,22 @@ class SubscribeCommand(
         .map { series -> replaceLogoUrlExtension(series) }
         .toList()
 
-    @Autowired
-    protected lateinit var messageSource: MessageSource
+    override fun getCommandIdentifierDescription(): String {
+        return commandIdentifier
+    }
 
     override fun execute(absSender: AbsSender?, user: User?, chat: Chat?, arguments: Array<out String>?) {
         val sendMessageRequest = SendMessage()
 
         sendMessageRequest.chatId = chat!!.id.toString()
 
-        sendMessageRequest.text = messageSource.getMessage("start.welcome", null, Locale.forLanguageTag(user!!.languageCode))
+        sendMessageRequest.text = messageSource.getMessage("start.welcome", null, Locale.forLanguageTag(user!!.languageCode ?: "ES"))
         absSender!!.execute(sendMessageRequest)
 
         sendMessageRequest.text =
             "[\u200B](${allSeries[0].logoUrl}) [${allSeries[0].name}](https://www.motorsports-database.racing/series/${allSeries[0].id}/view"
         sendMessageRequest.enableMarkdown(true)
-        sendMessageRequest.replyMarkup = this.getGalleryView(0, -1, user.languageCode)
+        sendMessageRequest.replyMarkup = this.getGalleryView(0, -1, user.languageCode ?: "ES")
 
         absSender.execute(sendMessageRequest)
     }
