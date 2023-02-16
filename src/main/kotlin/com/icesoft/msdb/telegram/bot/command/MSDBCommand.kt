@@ -18,14 +18,14 @@ abstract class MSDBCommand(
 
     fun getDescription(userLanguageCode: String): String {
         return """
-            <b>$COMMAND_INIT_CHARACTER${getCommandIdentifierDescription()}</b>
+            <b>$COMMAND_INIT_CHARACTER${getCommandIdentifierDescription()} ${if (restricted) "(" + messageSource.getMessage("admin", null, Locale.forLanguageTag(userLanguageCode)) + ")" else ""}</b>
             ${messageSource.getMessage(descriptionKey, null, Locale.forLanguageTag(userLanguageCode))}
             """.trimIndent()
     }
 
     fun getExtendedDescription(userLanguageCode: String): String {
         return """
-            <b>$COMMAND_INIT_CHARACTER${getCommandIdentifierDescription()}</b>
+            <b>$COMMAND_INIT_CHARACTER${getCommandIdentifierDescription()} ${if (restricted) "(" + messageSource.getMessage("admin", null, Locale.forLanguageTag(userLanguageCode)) + ")" else ""}</b>
             ${messageSource.getMessage(longDescriptionKey, null, Locale.forLanguageTag(userLanguageCode))}
             """.trimIndent()
     }
