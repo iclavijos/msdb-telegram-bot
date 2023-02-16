@@ -24,7 +24,7 @@ class CommandsHandler(
     private val subscribeCommand: SubscribeCommand,
     private val unsubscribeCommand: UnsubscribeCommand,
     showCommand: ShowCommand,
-    helpCommand: HelpCommand) : TelegramLongPollingCommandBot() {
+    private val helpCommand: HelpCommand) : TelegramLongPollingCommandBot() {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -56,7 +56,8 @@ class CommandsHandler(
         var command = getRegisteredCommand(commandPattern.matchEntire(commandTxt)?.groupValues?.get(1)) as MSDBCommand?
 
         if (command == null && commandTxt == "/start") {
-            command = subscribeCommand
+            message.text = "/help"
+            command = helpCommand
         } else if (command == null) {
             logger.warn("Command not found: ${message.text}")
         }
