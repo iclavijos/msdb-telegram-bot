@@ -1,3 +1,7 @@
+logging.file:
+  name: MSDBBotProd.log
+  path: /opt/bot
+
 spring:
   datasource:
     password: msdb07pwd@

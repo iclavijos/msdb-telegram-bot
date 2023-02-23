@@ -1,4 +1,6 @@
-logging:
+logging.file:
+  name: MSDBBotLocal.log
+  path: /Users/iclavijos
   level:
     ROOT: INFO
     io.ktor.client: ERROR
@@ -6,6 +8,12 @@ logging:
     org.springframework.web.client: DEBUG
     # org.apache.http: DEBUG
     # httpclient.wire: DEBUG
+  logback:
+    rollingpolicy:
+      file-name-pattern: MSDBBot-%d{yyyy-MM-dd}.%i.log
+      max-file-size: 1MB
+      total-size-cap: 10MB
+      max-history: true
 
 bot:
   username: motorsportsdb_bot
