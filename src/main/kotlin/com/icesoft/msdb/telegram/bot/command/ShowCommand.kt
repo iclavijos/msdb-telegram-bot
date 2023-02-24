@@ -17,10 +17,6 @@ import java.util.*
 class ShowCommand(val subscriptionsService: SubscriptionsService) :
     MSDBCommand("show", "help.show.basic", "help.show.extended", false) {
 
-    override fun getCommandIdentifierDescription(): String {
-        return commandIdentifier
-    }
-
     @Autowired
     protected lateinit var freeMarkerConfiguration: Configuration
 

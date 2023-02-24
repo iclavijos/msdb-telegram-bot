@@ -14,7 +14,9 @@ abstract class MSDBCommand(
     @Autowired
     protected lateinit var messageSource: MessageSource
 
-    abstract fun getCommandIdentifierDescription(): String
+    open fun getCommandIdentifierDescription(): String {
+        return commandIdentifier
+    }
 
     fun getDescription(userLanguageCode: String): String {
         return """

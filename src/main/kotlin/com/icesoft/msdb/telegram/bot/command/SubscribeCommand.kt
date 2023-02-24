@@ -33,10 +33,6 @@ class SubscribeCommand(private val subscriptionsService: SubscriptionsService):
         .map { series -> replaceLogoUrlExtension(series) }
         .toList()
 
-    override fun getCommandIdentifierDescription(): String {
-        return commandIdentifier
-    }
-
     override fun execute(absSender: AbsSender?, user: User?, chat: Chat?, arguments: Array<out String>?) {
         val sendMessageRequest = SendMessage()
 

@@ -18,10 +18,6 @@ import java.util.*
 class UnsubscribeCommand(val subscriptionsService: SubscriptionsService):
     MSDBCommand("unsubscribe", "help.unsubscribe.basic", "help.unsubscribe.extended", true) {
 
-    override fun getCommandIdentifierDescription(): String {
-        return commandIdentifier
-    }
-
     override fun execute(absSender: AbsSender?, user: User?, chat: Chat?, arguments: Array<out String>?) {
         val sendMessageRequest = SendMessage()
 
