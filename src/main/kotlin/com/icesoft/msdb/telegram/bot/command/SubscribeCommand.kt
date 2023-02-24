@@ -5,7 +5,6 @@ import com.icesoft.msdb.telegram.bot.service.SubscriptionsService
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery
 import org.telegram.telegrambots.meta.api.objects.Chat
@@ -14,7 +13,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton
 import org.telegram.telegrambots.meta.bots.AbsSender
 import java.util.*
-import kotlin.collections.ArrayList
 
 @Component
 class SubscribeCommand(private val subscriptionsService: SubscriptionsService):
@@ -58,28 +56,6 @@ class SubscribeCommand(private val subscriptionsService: SubscriptionsService):
         } else if (data[1] == "end") {
             endConversation(callbackQuery, absSender)
         }
-    }
-
-    private fun endConversation(
-        callbackQuery: CallbackQuery,
-        absSender: AbsSender
-    ) {
-        val deleteMessage = EditMessageReplyMarkup()
-        deleteMessage.chatId = callbackQuery.message.chatId.toString()
-        deleteMessage.messageId = callbackQuery.message.messageId
-        deleteMessage.replyMarkup = InlineKeyboardMarkup()
-        val rowsInline: MutableList<List<InlineKeyboardButton>> = ArrayList()
-        deleteMessage.replyMarkup.keyboard = rowsInline
-
-        absSender.execute(deleteMessage)
-
-        val sendMessageRequest = SendMessage()
-
-        sendMessageRequest.chatId = callbackQuery.message.chatId.toString()
-
-        sendMessageRequest.text =
-            messageSource.getMessage("start.end", null, Locale.forLanguageTag(callbackQuery.from.languageCode))
-        absSender.execute(sendMessageRequest)
     }
 
     private fun sendAnswerCallbackQuery(text: String, absSender: AbsSender, callbackQuery: CallbackQuery) {

@@ -23,6 +23,7 @@ class CommandsHandler(
     private val botProperties: BotProperties,
     private val subscribeCommand: SubscribeCommand,
     private val unsubscribeCommand: UnsubscribeCommand,
+    private val settingsCommand: SettingsCommand,
     showCommand: ShowCommand,
     private val helpCommand: HelpCommand) : TelegramLongPollingCommandBot() {
 
@@ -36,6 +37,7 @@ class CommandsHandler(
     init {
         register(subscribeCommand)
         register(unsubscribeCommand)
+        register(settingsCommand)
         register(showCommand)
 
         register(helpCommand)
@@ -78,10 +80,12 @@ class CommandsHandler(
     override fun processNonCommandUpdate(update: Update?) {
         if (update?.hasCallbackQuery() == true) {
             val callbackData = update.callbackQuery?.data
-            if (callbackData!!.startsWith("start", false)) {
+            if (callbackData!!.startsWith("start")) {
                 subscribeCommand.handleCallbackQuery(this, update.callbackQuery)
-            } else if (callbackData.startsWith("unsubscribe", false)) {
+            } else if (callbackData.startsWith("unsubscribe")) {
                 unsubscribeCommand.handleCallbackQuery(this, update.callbackQuery)
+            } else if (callbackData.startsWith("settings")) {
+                settingsCommand.handleCallbackQuery(this, update.callbackQuery)
             }
             return
         }
