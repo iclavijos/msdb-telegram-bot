@@ -7,5 +7,5 @@ import org.springframework.data.mongodb.core.mapping.Document
 data class TelegramGroupSettings(
     @Id
     var id: Long = 0,
-    var languageKey: String = "ES"
+    var languageCode: String = "ES"
 )
