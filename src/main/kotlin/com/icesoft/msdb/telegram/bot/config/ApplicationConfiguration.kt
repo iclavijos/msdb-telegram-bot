@@ -8,4 +8,5 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @EnableJpaRepositories("com.icesoft.msdb.telegram.bot.repository.jpa")
 @EnableMongoRepositories("com.icesoft.msdb.telegram.bot.repository.mongo")
 class ApplicationConfiguration {
+
 }

@@ -1,7 +1,9 @@
 package com.icesoft.msdb.telegram.bot.command
 
+import com.icesoft.msdb.telegram.bot.client.SeriesClient
 import com.icesoft.msdb.telegram.bot.model.Series
 import com.icesoft.msdb.telegram.bot.service.SubscriptionsService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
@@ -18,6 +20,9 @@ import java.util.*
 class SubscribeCommand(private val subscriptionsService: SubscriptionsService):
     MSDBCommand("subscribe", "help.subscribe.basic", "help.subscribe.extended", true) {
 
+    @Autowired
+    private lateinit var seriesClient: SeriesClient
+
     private val BACK = "⬅️"
     private val NEXT = "➡️"
     private val INDEX_OUT_OF_RANGE = "Requested index is out of range!"
@@ -27,12 +32,24 @@ class SubscribeCommand(private val subscriptionsService: SubscriptionsService):
         return series
     }
 
-    val allSeries: List<Series> = subscriptionsService.getSeries()
-        .map { series -> replaceLogoUrlExtension(series) }
-        .toList()
+    lateinit var filteredSeries: List<Series>
+
+    override fun getCommandIdentifierDescription(): String {
+        val stringBuilder = StringBuilder()
+        return stringBuilder.append(commandIdentifier).append(" [series name]").toString()
+    }
 
     override fun execute(absSender: AbsSender?, user: User?, chat: Chat?, arguments: Array<out String>?) {
         val sendMessageRequest = SendMessage()
+
+        if (arguments?.isNotEmpty()!!) {
+            // Filter series by parameter value
+            val seriesNameFilter = arguments.joinToString(" ")
+            filteredSeries = seriesClient.getSeries(seriesNameFilter)
+        } else {
+            filteredSeries = subscriptionsService.getSeries()
+        }
+        filteredSeries.map { series -> replaceLogoUrlExtension(series) }.toList()
 
         sendMessageRequest.chatId = chat!!.id.toString()
 
@@ -40,7 +57,7 @@ class SubscribeCommand(private val subscriptionsService: SubscriptionsService):
         absSender!!.execute(sendMessageRequest)
 
         sendMessageRequest.text =
-            "[\u200B](${allSeries[0].logoUrl}) [${allSeries[0].name}](https://www.motorsports-database.racing/series/${allSeries[0].id}/view"
+            "[\u200B](${filteredSeries[0].logoUrl}) [${filteredSeries[0].name}](https://www.motorsports-database.racing/series/${filteredSeries[0].id}/view"
         sendMessageRequest.enableMarkdown(true)
         sendMessageRequest.replyMarkup = this.getGalleryView(0, -1, user.languageCode ?: "ES")
 
@@ -77,7 +94,7 @@ class SubscribeCommand(private val subscriptionsService: SubscriptionsService):
             index--
         } else if (action == 1 && index == 0) {
             return null
-        } else if (action == 2 && index >= allSeries.size - 1) {
+        } else if (action == 2 && index >= filteredSeries.size - 1) {
             return null
         } else if (action == 2) {
             index++
@@ -125,7 +142,7 @@ class SubscribeCommand(private val subscriptionsService: SubscriptionsService):
             }
         } else if (data[2] == "next") {
             markup = this.getGalleryView(data[3].toInt(), 2, callbackQuery.from.languageCode)
-            if (index < allSeries.size - 1) {
+            if (index < filteredSeries.size - 1) {
                 index++
             }
         }
@@ -135,7 +152,7 @@ class SubscribeCommand(private val subscriptionsService: SubscriptionsService):
             val editMarkup = EditMessageText()
             editMarkup.chatId = callbackQuery.message.chatId.toString()
             editMarkup.inlineMessageId = callbackQuery.inlineMessageId
-            editMarkup.text = "[\u200B](${allSeries[index].logoUrl}) [${allSeries[index].name}](https://www.motorsports-database.racing/series/${allSeries[index].id}/view"
+            editMarkup.text = "[\u200B](${filteredSeries[index].logoUrl}) [${filteredSeries[index].name}](https://www.motorsports-database.racing/series/${filteredSeries[index].id}/view"
             editMarkup.enableMarkdown(true)
             editMarkup.messageId = callbackQuery.message.messageId
             editMarkup.replyMarkup = markup
@@ -146,7 +163,7 @@ class SubscribeCommand(private val subscriptionsService: SubscriptionsService):
 
     private fun processSubscriptionCallback(data: Array<String>, absSender: AbsSender, callbackQuery: CallbackQuery) {
         val index = data[2].toInt()
-        val series = allSeries[index]
+        val series = filteredSeries[index]
         val sessionType = data[3]
         val markupInline = InlineKeyboardMarkup()
         val rowsInline: MutableList<List<InlineKeyboardButton>> = mutableListOf()
@@ -197,7 +214,7 @@ class SubscribeCommand(private val subscriptionsService: SubscriptionsService):
                 val flags = data[4].toInt()
                 subscriptionsService.subscribeChatToSeries(
                     callbackQuery.message.chatId,
-                    allSeries[index].id,
+                    filteredSeries[index].id,
                     true,
                     (flags - 100) / 10 == 1,
                     flags % 10 != 0
