@@ -34,7 +34,6 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 	implementation("org.springframework.boot:spring-boot-starter-freemarker")
-	implementation("org.springframework.cloud:spring-cloud-dependencies:2021.0.5")
 	implementation("org.springframework.cloud:spring-cloud-starter-openfeign:3.1.4")
 
 	implementation("org.telegram:telegrambots-spring-boot-starter:6.4.0")
