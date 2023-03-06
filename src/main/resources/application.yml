@@ -16,7 +16,7 @@ logging.file:
       max-history: true
 
 bot:
-  username: motorsportsdb_bot
+  username: msdb_local_bot
   token: ${telegram_token}
 
 server.port: 8998
