@@ -51,8 +51,18 @@ class CommandsHandler(
         return botProperties.username
     }
 
-    override fun filter(message: Message?): Boolean {
+    override fun onUpdatesReceived(updates: MutableList<Update>?) {
+        val filteredUpdates = updates?.filter { update ->
+            val isReceiverAnotherBot = (update.message?.text?.contains("@") == true) && (update.message?.text?.contains(
+                "@${botUsername}",
+                true
+            ) == false)
+            update.hasCallbackQuery() || (update.message?.chat?.isGroupChat == false) || ((update.message?.chat?.isGroupChat == true) && !isReceiverAnotherBot)
+        }
+        super.onUpdatesReceived(filteredUpdates)
+    }
 
+    override fun filter(message: Message?): Boolean {
         val commandTxt = message!!.text.split("\\s+".toRegex())[0]
 
         var command = getRegisteredCommand(commandPattern.matchEntire(commandTxt)?.groupValues?.get(1)) as MSDBCommand?
@@ -106,14 +116,20 @@ class CommandsHandler(
     }
 
     override fun processInvalidCommandUpdate(update: Update?) {
-        val commandUnknownMessage = SendMessage()
-        commandUnknownMessage.chatId = update?.message?.chatId.toString()
-        commandUnknownMessage.text = messageSource.getMessage(
-            "error.wtf",
-            arrayOf(update?.message?.from?.userName ?: "${update?.message?.from?.firstName} ${update?.message?.from?.lastName}"),
-            Locale.forLanguageTag(update?.message?.from?.languageCode))
+        if (!update?.message?.isGroupMessage!!) {
+            val commandUnknownMessage = SendMessage()
+            commandUnknownMessage.chatId = update?.message?.chatId.toString()
+            commandUnknownMessage.text = messageSource.getMessage(
+                "error.wtf",
+                arrayOf(
+                    update?.message?.from?.userName
+                        ?: "${update?.message?.from?.firstName} ${update?.message?.from?.lastName}"
+                ),
+                Locale.forLanguageTag(update?.message?.from?.languageCode)
+            )
 
-        execute(commandUnknownMessage)
+            execute(commandUnknownMessage)
+        }
     }
 
 }
