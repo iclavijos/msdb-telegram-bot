@@ -2,6 +2,9 @@ logging.file:
   name: MSDBBotProd.log
   path: /opt/bot
 
+bot:
+  username: motorsportsdb_bot
+
 spring:
   datasource:
     password: msdb07pwd@
