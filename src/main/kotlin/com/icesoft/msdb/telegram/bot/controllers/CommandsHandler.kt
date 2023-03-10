@@ -118,14 +118,14 @@ class CommandsHandler(
     override fun processInvalidCommandUpdate(update: Update?) {
         if (!update?.message?.isGroupMessage!!) {
             val commandUnknownMessage = SendMessage()
-            commandUnknownMessage.chatId = update?.message?.chatId.toString()
+            commandUnknownMessage.chatId = update.message?.chatId.toString()
             commandUnknownMessage.text = messageSource.getMessage(
                 "error.wtf",
                 arrayOf(
-                    update?.message?.from?.userName
-                        ?: "${update?.message?.from?.firstName} ${update?.message?.from?.lastName}"
+                    update.message?.from?.userName
+                        ?: "${update.message?.from?.firstName} ${update.message?.from?.lastName}"
                 ),
-                Locale.forLanguageTag(update?.message?.from?.languageCode)
+                Locale.forLanguageTag(update.message?.from?.languageCode)
             )
 
             execute(commandUnknownMessage)
