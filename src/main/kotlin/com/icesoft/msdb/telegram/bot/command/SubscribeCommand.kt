@@ -42,12 +42,12 @@ class SubscribeCommand(private val subscriptionsService: SubscriptionsService):
     override fun execute(absSender: AbsSender?, user: User?, chat: Chat?, arguments: Array<out String>?) {
         val sendMessageRequest = SendMessage()
 
-        if (arguments?.isNotEmpty()!!) {
+        filteredSeries = if (arguments?.isNotEmpty()!!) {
             // Filter series by parameter value
             val seriesNameFilter = arguments.joinToString(" ")
-            filteredSeries = seriesClient.getSeries(seriesNameFilter)
+            seriesClient.getSeries(seriesNameFilter)
         } else {
-            filteredSeries = subscriptionsService.getSeries()
+            subscriptionsService.getSeries()
         }
         filteredSeries.map { series -> replaceLogoUrlExtension(series) }.toList()
 
