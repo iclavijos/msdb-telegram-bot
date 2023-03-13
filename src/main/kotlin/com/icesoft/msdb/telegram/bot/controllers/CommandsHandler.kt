@@ -3,7 +3,6 @@ package com.icesoft.msdb.telegram.bot.controllers
 import com.icesoft.msdb.telegram.bot.command.*
 import com.icesoft.msdb.telegram.bot.config.BotProperties
 import lombok.extern.slf4j.Slf4j
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.MessageSource
 import org.springframework.stereotype.Component
@@ -23,11 +22,9 @@ class CommandsHandler(
     private val botProperties: BotProperties,
     private val subscribeCommand: SubscribeCommand,
     private val unsubscribeCommand: UnsubscribeCommand,
-    private val settingsCommand: SettingsCommand,
+    private val settingsCommand: LanguageCommand,
     showCommand: ShowCommand,
     private val helpCommand: HelpCommand) : TelegramLongPollingCommandBot() {
-
-    private val logger = LoggerFactory.getLogger(javaClass)
 
     @Autowired
     protected lateinit var messageSource: MessageSource
@@ -70,8 +67,6 @@ class CommandsHandler(
         if (command == null && commandTxt == "/start") {
             message.text = "/help"
             command = helpCommand
-        } else if (command == null) {
-            logger.warn("Command not found: ${message.text}")
         }
 
         if (message.chat?.isUserChat!!) return false
@@ -94,7 +89,7 @@ class CommandsHandler(
                 subscribeCommand.handleCallbackQuery(this, update.callbackQuery)
             } else if (callbackData.startsWith("unsubscribe")) {
                 unsubscribeCommand.handleCallbackQuery(this, update.callbackQuery)
-            } else if (callbackData.startsWith("settings")) {
+            } else if (callbackData.startsWith("language")) {
                 settingsCommand.handleCallbackQuery(this, update.callbackQuery)
             }
             return

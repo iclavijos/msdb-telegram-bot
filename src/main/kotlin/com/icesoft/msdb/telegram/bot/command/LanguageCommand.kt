@@ -13,15 +13,15 @@ import org.telegram.telegrambots.meta.bots.AbsSender
 import java.util.*
 
 @Component
-class SettingsCommand(private val settingsRepository: SettingsRepository) : MSDBCommand(
-    "settings", "help.settings.basic", "help.settings.extended", true
+class LanguageCommand(private val settingsRepository: SettingsRepository) : MSDBCommand(
+    "language", "help.language.basic", "help.language.extended", true
 ) {
     override fun execute(absSender: AbsSender?, user: User?, chat: Chat?, arguments: Array<out String>?) {
         val sendMessageRequest = SendMessage()
         val languageCode = user!!.languageCode ?: "ES"
         sendMessageRequest.chatId = chat!!.id.toString()
 
-        sendMessageRequest.text = messageSource.getMessage("settings.welcome", null, Locale.forLanguageTag(languageCode))
+        sendMessageRequest.text = messageSource.getMessage("language.welcome", null, Locale.forLanguageTag(languageCode))
 
         sendMessageRequest.enableMarkdown(true)
 
@@ -32,20 +32,20 @@ class SettingsCommand(private val settingsRepository: SettingsRepository) : MSDB
         val inlineKeyboardButtonBuilder = InlineKeyboardButton.builder()
 
         rowInline.add(inlineKeyboardButtonBuilder
-            .text(messageSource.getMessage("settings.english", null, Locale.forLanguageTag(languageCode)))
-            .callbackData("settings:confirm:EN")
+            .text(messageSource.getMessage("language.english", null, Locale.forLanguageTag(languageCode)))
+            .callbackData("language:confirm:EN")
             .build())
         rowInline.add(inlineKeyboardButtonBuilder
-            .text(messageSource.getMessage("settings.spanish", null, Locale.forLanguageTag(languageCode)))
-            .callbackData("settings:confirm:ES")
+            .text(messageSource.getMessage("language.spanish", null, Locale.forLanguageTag(languageCode)))
+            .callbackData("language:confirm:ES")
             .build())
         rowInline.add(inlineKeyboardButtonBuilder
-            .text(messageSource.getMessage("settings.catalan", null, Locale.forLanguageTag(languageCode)))
-            .callbackData("settings:confirm:CA")
+            .text(messageSource.getMessage("language.catalan", null, Locale.forLanguageTag(languageCode)))
+            .callbackData("language:confirm:CA")
             .build())
         rowInline.add(inlineKeyboardButtonBuilder
             .text(messageSource.getMessage("cancel", null, Locale.forLanguageTag(languageCode)))
-            .callbackData("settings:end")
+            .callbackData("language:end")
             .build())
 
         rowsInline.add(rowInline)
