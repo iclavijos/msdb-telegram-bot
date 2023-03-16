@@ -61,7 +61,9 @@ class LanguageCommand(private val settingsRepository: SettingsRepository) : MSDB
         var replyBack = false
         if (data[1] == "confirm") {
             val languageCode = data[2]
-            settingsRepository.save(TelegramGroupSettings(callbackQuery.message.chatId, languageCode))
+            val settings = settingsRepository.findById(callbackQuery.message.chatId).orElse(TelegramGroupSettings(callbackQuery.message.chatId, languageCode))
+            settings.languageCode = languageCode
+            settingsRepository.save(settings)
             replyBack = true
         }
 
