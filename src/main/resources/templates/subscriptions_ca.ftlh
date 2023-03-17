@@ -1,4 +1,4 @@
-Actualment estàs subscrit i reps notificacions 15 minuts, 1 hora i 3 hores abans de:
+Actualment estàs subscrit i reps notificacions 15 minuts, 1 hora i/o 3 hores abans, segons les teves preferències, de:
 
 <#list subscriptions as subscription>
 <b><u>${subscription.seriesName}</u></b>

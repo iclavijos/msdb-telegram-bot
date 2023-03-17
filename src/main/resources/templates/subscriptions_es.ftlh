@@ -1,4 +1,4 @@
-Actualmente estás suscrito y recibes notificaciones 15 minutos, 1 hora y 3 horas antes de:
+Actualmente estás suscrito y recibes notificaciones 15 minutos, 1 hora y/o 3 horas antes, según tus preferencias, de:
 
 <#list subscriptions as subscription>
 <b><u>${subscription.seriesName}</u></b>
