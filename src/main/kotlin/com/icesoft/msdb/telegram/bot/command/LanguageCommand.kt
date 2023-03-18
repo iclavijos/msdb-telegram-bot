@@ -44,6 +44,10 @@ class LanguageCommand(private val settingsRepository: SettingsRepository) : MSDB
             .callbackData("language:confirm:CA")
             .build())
         rowInline.add(inlineKeyboardButtonBuilder
+            .text(messageSource.getMessage("language.galician", null, Locale.forLanguageTag(languageCode)))
+            .callbackData("language:confirm:GL")
+            .build())
+        rowInline.add(inlineKeyboardButtonBuilder
             .text(messageSource.getMessage("cancel", null, Locale.forLanguageTag(languageCode)))
             .callbackData("language:end")
             .build())
