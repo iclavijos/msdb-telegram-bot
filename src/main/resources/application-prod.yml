@@ -1,7 +1,3 @@
-logging.file:
-  name: MSDBBotProd.log
-  path: /opt/bot
-
 bot:
   username: motorsportsdb_bot
 
