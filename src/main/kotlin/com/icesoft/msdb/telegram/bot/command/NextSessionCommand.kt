@@ -7,7 +7,6 @@ import freemarker.template.Configuration
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Component
-import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery
 import org.telegram.telegrambots.meta.api.objects.Chat
@@ -16,7 +15,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton
 import org.telegram.telegrambots.meta.bots.AbsSender
 import java.io.StringWriter
-import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -68,7 +66,7 @@ class NextSessionCommand:
         absSender?.execute(sendMessageRequest)
     }
 
-    private fun getGalleryView(series: List<Series>): InlineKeyboardMarkup? {
+    private fun getGalleryView(series: List<Series>): InlineKeyboardMarkup {
         val numRows = series.size / 2 + series.size % 2
         val markupInline = InlineKeyboardMarkup()
         val rowsInline: MutableList<List<InlineKeyboardButton>> = mutableListOf()
@@ -112,14 +110,14 @@ class NextSessionCommand:
             else
                 eventSession.eventEdition.trackLayout!!.racetrack.timeZone
 
-            val model = mutableMapOf<String, Object>()
-            model["seriesName"] = series.name as Object
-            model["session"] = eventSession as Object
-            model["startTimeLocal"] = sdf.format(LocalDateTime.ofInstant(Instant.ofEpochSecond(eventSession.sessionStartTime), ZoneId.of(timeZone))) as Object
-            model["startTimeMadrid"] = sdf.format(LocalDateTime.ofInstant(Instant.ofEpochSecond(eventSession.sessionStartTime), ZoneId.of("Europe/Madrid"))) as Object
-            model["startTimeNY"] = sdf.format(LocalDateTime.ofInstant(Instant.ofEpochSecond(eventSession.sessionStartTime), ZoneId.of("America/New_York"))) as Object
-            model["startTimeBBAA"] = sdf.format(LocalDateTime.ofInstant(Instant.ofEpochSecond(eventSession.sessionStartTime), ZoneId.of("America/Argentina/Buenos_Aires"))) as Object
-            model["startTimeSydney"] = sdf.format(LocalDateTime.ofInstant(Instant.ofEpochSecond(eventSession.sessionStartTime), ZoneId.of("Australia/Sydney"))) as Object
+            val model = mutableMapOf<String, Any>()
+            model["seriesName"] = series.name as Any
+            model["session"] = eventSession as Any
+            model["startTimeLocal"] = sdf.format(LocalDateTime.ofInstant(Instant.ofEpochSecond(eventSession.sessionStartTime), ZoneId.of(timeZone))) as Any
+            model["startTimeMadrid"] = sdf.format(LocalDateTime.ofInstant(Instant.ofEpochSecond(eventSession.sessionStartTime), ZoneId.of("Europe/Madrid"))) as Any
+            model["startTimeNY"] = sdf.format(LocalDateTime.ofInstant(Instant.ofEpochSecond(eventSession.sessionStartTime), ZoneId.of("America/New_York"))) as Any
+            model["startTimeBBAA"] = sdf.format(LocalDateTime.ofInstant(Instant.ofEpochSecond(eventSession.sessionStartTime), ZoneId.of("America/Argentina/Buenos_Aires"))) as Any
+            model["startTimeSydney"] = sdf.format(LocalDateTime.ofInstant(Instant.ofEpochSecond(eventSession.sessionStartTime), ZoneId.of("Australia/Sydney"))) as Any
 
             val template = freeMarkerConfiguration.getTemplate("next_session.ftlh", locale)
             val stringWriter = StringWriter()
@@ -128,6 +126,6 @@ class NextSessionCommand:
             return stringWriter.toString()
         }
 
-        return messageSource.getMessage("nextSession.noSession", null, Locale.forLanguageTag(user!!.languageCode ?: "ES"))
+        return messageSource.getMessage("nextSession.noSession", null, Locale.forLanguageTag(user.languageCode ?: "ES"))
     }
 }

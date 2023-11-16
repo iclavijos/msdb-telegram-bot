@@ -27,7 +27,7 @@ abstract class MSDBCommand(
     open fun endConversation(
         callbackQuery: CallbackQuery,
         absSender: AbsSender,
-        endMessageText: String
+        endMessageText: String?
     ) {
         val deleteMessage = EditMessageReplyMarkup()
         deleteMessage.chatId = callbackQuery.message.chatId.toString()
