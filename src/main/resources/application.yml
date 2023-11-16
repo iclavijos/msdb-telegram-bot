@@ -2,6 +2,9 @@ bot:
   username: msdb_local_bot
   token: ${telegram_token}
 
+app:
+  server: http://localhost:8080
+
 server.port: 8998
 
 spring:

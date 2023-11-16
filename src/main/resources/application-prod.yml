@@ -1,6 +1,9 @@
 bot:
   username: motorsportsdb_bot
 
+app:
+  server: https://www.motorsports-database.racing
+
 spring:
   datasource:
     password: msdb07pwd@

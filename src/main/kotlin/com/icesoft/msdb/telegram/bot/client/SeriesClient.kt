@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestParam
 
-@FeignClient(name = "seriesClient", url = "https://www.motorsports-database.racing/api/series")
+@FeignClient(name = "seriesClient", url = "\${app.server}/api/series")
 interface SeriesClient {
 
     @GetMapping("/{seriesId}")
