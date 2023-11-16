@@ -71,14 +71,17 @@ class SubscribeCommand(private val subscriptionsService: SubscriptionsService):
         } else if (data[1] == "subscribe") {
             processSubscriptionCallback(data, absSender, callbackQuery)
         } else if (data[1] == "end") {
-            endConversation(callbackQuery, absSender)
+            endConversation(
+                callbackQuery,
+                absSender,
+                messageSource.getMessage("start.end", null, Locale.forLanguageTag(callbackQuery.from.languageCode))
+            )
         }
     }
 
     private fun sendAnswerCallbackQuery(text: String, absSender: AbsSender, callbackQuery: CallbackQuery) {
         val answerCallbackQuery = AnswerCallbackQuery()
         answerCallbackQuery.callbackQueryId = callbackQuery.id
-        answerCallbackQuery.showAlert = true
         answerCallbackQuery.text = text
         absSender.execute(answerCallbackQuery)
     }
@@ -220,7 +223,11 @@ class SubscribeCommand(private val subscriptionsService: SubscriptionsService):
                     flags % 10 != 0
                 )
 
-                endConversation(callbackQuery, absSender)
+                endConversation(
+                    callbackQuery,
+                    absSender,
+                    messageSource.getMessage("start.end", null, Locale.forLanguageTag(callbackQuery.from.languageCode))
+                )
 
                 return
             }

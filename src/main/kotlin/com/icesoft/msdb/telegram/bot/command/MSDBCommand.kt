@@ -27,7 +27,7 @@ abstract class MSDBCommand(
     open fun endConversation(
         callbackQuery: CallbackQuery,
         absSender: AbsSender,
-        sendEndMessage: Boolean = true
+        endMessageText: String
     ) {
         val deleteMessage = EditMessageReplyMarkup()
         deleteMessage.chatId = callbackQuery.message.chatId.toString()
@@ -38,13 +38,12 @@ abstract class MSDBCommand(
 
         absSender.execute(deleteMessage)
 
-        if (sendEndMessage) {
+        if (endMessageText != null) {
             val sendMessageRequest = SendMessage()
 
             sendMessageRequest.chatId = callbackQuery.message.chatId.toString()
-
-            sendMessageRequest.text =
-                messageSource.getMessage("start.end", null, Locale.forLanguageTag(callbackQuery.from.languageCode))
+            sendMessageRequest.enableHtml(true)
+            sendMessageRequest.text = endMessageText
             absSender.execute(sendMessageRequest)
         }
     }

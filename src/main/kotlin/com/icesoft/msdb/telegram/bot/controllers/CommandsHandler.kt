@@ -24,6 +24,7 @@ class CommandsHandler(
     private val unsubscribeCommand: UnsubscribeCommand,
     private val languageCommand: LanguageCommand,
     private val notificationsCommand: NotificationsCommand,
+    private val nextSessionCommand: NextSessionCommand,
     showCommand: ShowCommand,
     private val helpCommand: HelpCommand) : TelegramLongPollingCommandBot() {
 
@@ -38,6 +39,7 @@ class CommandsHandler(
         register(languageCommand)
         register(notificationsCommand)
         register(showCommand)
+        register(nextSessionCommand)
 
         register(helpCommand)
     }
@@ -93,6 +95,8 @@ class CommandsHandler(
                 unsubscribeCommand.handleCallbackQuery(this, update.callbackQuery)
             } else if (callbackData.startsWith("language")) {
                 languageCommand.handleCallbackQuery(this, update.callbackQuery)
+            } else if (callbackData.startsWith("nextsession")) {
+                nextSessionCommand.handleCallbackQuery(this, update.callbackQuery)
             }
             return
         }

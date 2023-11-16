@@ -62,15 +62,15 @@ class LanguageCommand(private val settingsRepository: SettingsRepository) : MSDB
 
     fun handleCallbackQuery(absSender: AbsSender, callbackQuery: CallbackQuery) {
         val data = callbackQuery.data.split(":".toRegex()).toTypedArray()
-        var replyBack = false
+        var replyBack: String? = null
         if (data[1] == "confirm") {
             val languageCode = data[2]
             val settings = settingsRepository.findById(callbackQuery.message.chatId).orElse(TelegramGroupSettings(callbackQuery.message.chatId, languageCode))
             settings.languageCode = languageCode
             settingsRepository.save(settings)
-            replyBack = true
+            replyBack = messageSource.getMessage("start.end", null, Locale.forLanguageTag(callbackQuery.from.languageCode))
         }
 
-        endConversation(callbackQuery, absSender, replyBack)
+        endConversation(callbackQuery, absSender, replyBack!!)
     }
 }
