@@ -56,7 +56,7 @@ class NextSessionCommand:
                     sendMessageRequest.text =
                         messageSource.getMessage("nextSession.tooManyResults", null, Locale.forLanguageTag(user!!.languageCode ?: "ES"))
                     sendMessageRequest.enableMarkdown(true)
-                    sendMessageRequest.replyMarkup = this.getGalleryView(series)
+                    sendMessageRequest.replyMarkup = this.generateSeriesSelectorKeyboard(series)
                 }
             } else {
                 sendMessageRequest.text =
@@ -66,7 +66,7 @@ class NextSessionCommand:
         absSender?.execute(sendMessageRequest)
     }
 
-    private fun getGalleryView(series: List<Series>): InlineKeyboardMarkup {
+    private fun generateSeriesSelectorKeyboard(series: List<Series>): InlineKeyboardMarkup {
         val numRows = series.size / 2 + series.size % 2
         val markupInline = InlineKeyboardMarkup()
         val rowsInline: MutableList<List<InlineKeyboardButton>> = mutableListOf()
