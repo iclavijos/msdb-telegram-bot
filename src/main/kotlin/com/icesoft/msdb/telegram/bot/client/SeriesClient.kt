@@ -1,6 +1,7 @@
 package com.icesoft.msdb.telegram.bot.client
 
 import com.icesoft.msdb.telegram.bot.model.Series
+import com.icesoft.msdb.telegram.bot.model.SeriesEdition
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.GetMapping
@@ -18,4 +19,7 @@ interface SeriesClient {
 
     @GetMapping
     fun getSeries(@RequestParam(required = false) query: String, pageable: Pageable): List<Series>
+
+    @GetMapping("/{seriesId}/editions")
+    fun getEditions(@PathVariable seriesId: Long, pageable: Pageable): List<SeriesEdition>
 }

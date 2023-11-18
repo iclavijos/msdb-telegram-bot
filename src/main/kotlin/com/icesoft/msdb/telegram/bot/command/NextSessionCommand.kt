@@ -105,7 +105,7 @@ class NextSessionCommand:
         if (eventSession != null) {
             val locale = Locale.forLanguageTag(user.languageCode ?: "ES")
             val sdf = if (locale.language == "EN") DateTimeFormatter.ofPattern("EEEE, MMMM d uuuu - h:mm", locale) else DateTimeFormatter.ofPattern("EEEE, d MMMM uuuu - HH:mm", locale)
-            val timeZone = if (eventSession.eventEdition.event.raid || eventSession.eventEdition.event.rally)
+            val timeZone = if (eventSession.eventEdition.event!!.raid || eventSession.eventEdition.event!!.rally)
                 eventSession.eventEdition.locationTimeZone
             else
                 eventSession.eventEdition.trackLayout!!.racetrack.timeZone

@@ -9,5 +9,6 @@ data class EventEdition(
     var posterUrl: String?,
     var trackLayout: RacetrackLayout?,
     var locationTimeZone: String?,
-    var event: Event
+    var event: Event?,
+    var formattedEventDate: String?
 )

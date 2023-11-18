@@ -3,7 +3,8 @@ bot:
   token: ${telegram_token}
 
 app:
-  server: http://localhost:8080
+  #server: http://localhost:8080
+  server: https://www.motorsports-database.racing
 
 server.port: 8998
 

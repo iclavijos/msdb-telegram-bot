@@ -2,7 +2,8 @@ bot:
   username: motorsportsdb_bot
 
 app:
-  server: https://www.motorsports-database.racing
+  # server: https://www.motorsports-database.racing
+  server: http://localhost:8080
 
 spring:
   datasource:
