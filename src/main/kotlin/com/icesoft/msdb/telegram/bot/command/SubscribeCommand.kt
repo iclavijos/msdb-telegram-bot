@@ -18,7 +18,7 @@ import java.util.*
 
 @Component
 class SubscribeCommand(private val subscriptionsService: SubscriptionsService):
-    MSDBCommand("subscribe", "help.subscribe.basic", "help.subscribe.extended", true) {
+    MSDBCommand("subscribe", "help.subscribe.basic", "help.subscribe.extended", true, 20) {
 
     @Autowired
     private lateinit var seriesClient: SeriesClient

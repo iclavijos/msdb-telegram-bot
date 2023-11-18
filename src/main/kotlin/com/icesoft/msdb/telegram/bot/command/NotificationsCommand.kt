@@ -11,7 +11,7 @@ import java.util.*
 
 @Component
 class NotificationsCommand(private val settingsRepository: SettingsRepository):
-    MSDBCommand("notifications", "help.notifications.basic", "help.notifications.extended", true) {
+    MSDBCommand("notifications", "help.notifications.basic", "help.notifications.extended", true, 50) {
 
     private val nonDigitsRegex = "(?!^\\d+\$)^.+\$".toRegex()
 

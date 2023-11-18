@@ -16,7 +16,7 @@ import java.util.*
 
 @Component
 class UnsubscribeCommand(val subscriptionsService: SubscriptionsService):
-    MSDBCommand("unsubscribe", "help.unsubscribe.basic", "help.unsubscribe.extended", true) {
+    MSDBCommand("unsubscribe", "help.unsubscribe.basic", "help.unsubscribe.extended", true, 30) {
 
     override fun execute(absSender: AbsSender?, user: User?, chat: Chat?, arguments: Array<out String>?) {
         val sendMessageRequest = SendMessage()

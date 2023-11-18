@@ -10,7 +10,7 @@ import java.util.*
 
 @Component
 class HelpCommand:
-    MSDBCommand("help", "help.help.basic", "help.help.extended", false) {
+    MSDBCommand("help", "help.help.basic", "help.help.extended", false, 1) {
 
     override fun getCommandIdentifierDescription(): String {
         val stringBuilder = StringBuilder()
@@ -41,9 +41,9 @@ class HelpCommand:
                 )
             } else {
                 val reply = StringBuilder()
-                for (command in registry.registeredCommands) {
-                    val msdbCommand = command as MSDBCommand
-                    reply.append(msdbCommand.getDescription(user?.languageCode ?: "ES")).append(System.lineSeparator()).append(System.lineSeparator())
+                val commands = registry.registeredCommands as Collection<MSDBCommand>
+                for (command in commands.sortedBy { it.order }) {
+                    reply.append(command.getDescription(user?.languageCode ?: "ES")).append(System.lineSeparator()).append(System.lineSeparator())
                 }
 
                 absSender.execute(

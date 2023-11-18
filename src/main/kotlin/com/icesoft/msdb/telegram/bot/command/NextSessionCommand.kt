@@ -23,7 +23,7 @@ import java.util.*
 
 @Component
 class NextSessionCommand:
-    MSDBCommand("nextSession", "help.nextSession.basic", "help.nextSession.extended", false) {
+    MSDBCommand("nextSession", "help.nextSession.basic", "help.nextSession.extended", false, 80) {
 
     @Autowired
     private lateinit var seriesClient: SeriesClient

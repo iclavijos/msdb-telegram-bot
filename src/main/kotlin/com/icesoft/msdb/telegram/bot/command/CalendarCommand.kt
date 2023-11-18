@@ -26,7 +26,7 @@ import java.util.*
 
 @Component
 class CalendarCommand:
-    MSDBCommand("calendar", "help.calendar.basic", "help.calendar.extended", false) {
+    MSDBCommand("calendar", "help.calendar.basic", "help.calendar.extended", false, 70) {
 
     @Autowired
     private lateinit var seriesClient: SeriesClient

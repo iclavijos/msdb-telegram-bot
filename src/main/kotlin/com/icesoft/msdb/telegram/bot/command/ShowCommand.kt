@@ -15,7 +15,7 @@ import java.util.*
 
 @Component
 class ShowCommand(val subscriptionsService: SubscriptionsService) :
-    MSDBCommand("show", "help.show.basic", "help.show.extended", false) {
+    MSDBCommand("show", "help.show.basic", "help.show.extended", false, 40) {
 
     @Autowired
     protected lateinit var freeMarkerConfiguration: Configuration

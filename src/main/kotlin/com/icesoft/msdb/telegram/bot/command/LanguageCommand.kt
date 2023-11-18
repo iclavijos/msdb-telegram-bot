@@ -14,7 +14,7 @@ import java.util.*
 
 @Component
 class LanguageCommand(private val settingsRepository: SettingsRepository) : MSDBCommand(
-    "language", "help.language.basic", "help.language.extended", true
+    "language", "help.language.basic", "help.language.extended", true, 60
 ) {
     override fun execute(absSender: AbsSender?, user: User?, chat: Chat?, arguments: Array<out String>?) {
         val sendMessageRequest = SendMessage()

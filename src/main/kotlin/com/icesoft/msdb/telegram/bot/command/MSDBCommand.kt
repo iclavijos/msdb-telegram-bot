@@ -15,7 +15,8 @@ abstract class MSDBCommand(
     commandIdentifier: String,
     private val descriptionKey: String,
     private val longDescriptionKey: String,
-    val restricted: Boolean = false) : BotCommand(commandIdentifier, "") {
+    val restricted: Boolean = false,
+    val order: Int = 0) : BotCommand(commandIdentifier, "") {
 
     @Autowired
     protected lateinit var messageSource: MessageSource
